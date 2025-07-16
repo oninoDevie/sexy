@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>NotaFija</title>
+  <style>
+    :root {
+      --color-bg: #032459;
+      --color-text: #FFFFFF;
+      --color-primary: #9DBA5A;
+      --color-accent: #C9F95B;
+      --color-secondary: #ACC07D;
+      --color-card: #222;
+    }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .section {
+      margin: 2rem auto;
+      max-width: 600px;
+    }
+    .note {
+      width: 100%;
+      height: 120px;
+      background: var(--color-card);
+      color: var(--color-text);
+      border: none;
+      padding: 1rem;
+    }
+    .todo-list {
+      list-style: none;
+      padding: 0;
+    }
+    .todo-list li {
+      margin: 0.5rem 0;
+      background: var(--color-secondary);
+      padding: 0.5rem;
+      border-radius: 4px;
+      color: var(--color-bg);
+    }
+    #cproduxity-widget {
+      background: var(--color-card);
+      color: var(--color-text);
+      padding: 1rem;
+      border-radius: 8px;
+      width: 220px;
+      margin: 2rem auto;
+    }
+    #cproduxity-widget button {
+      background: var(--color-accent);
+      border: none;
+      margin: 0.25rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--color-bg);
+    }
+    .bg-button {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--color-primary);
+      color: var(--color-bg);
+      padding: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
+    .blogs {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 2rem auto;
+      max-width: 600px;
+    }
+    .blog-card {
+      background: var(--color-card);
+      padding: 1rem;
+      border-radius: 6px;
+      color: var(--color-text);
+    }
+    footer {
+      background: var(--color-card);
+      color: var(--color-text);
+      padding: 2rem;
+      text-align: center;
+    }
+    footer div {
+      margin-top: 1rem;
+    }
+    footer p {
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <button class="bg-button" onclick="cycleBackground()">🎨</button>
+
+  <section class="section">
+    <textarea class="note" placeholder="✏️"></textarea>
+  </section>
+
+  <section class="section">
+    <input type="text" id="todoInput" placeholder="➕">
+    <button onclick="addTodo()">✅</button>
+    <ul id="todoList" class="todo-list"></ul>
+  </section>
+
+  <div id="cproduxity-widget">
+    ⏳ <input type="number" id="customTime" value="25" min="1" style="width:50px;"> ⏱️
+    <div id="timer">25:00</div>
+    <button id="startBtn" onclick="startCproduxity()">▶️</button>
+    <button onclick="stopCproduxity()">⏹️</button>
+    <button onclick="resetCproduxity()">🔄</button>
+    <ul id="history"></ul>
+  </div>
+
+  <section class="blogs">
+    <div class="blog-card">🧬</div>
+    <div class="blog-card">🎨</div>
+    <div class="blog-card">🎵</div>
+    <div class="blog-card">📚</div>
+    <div class="blog-card">📰</div>
+  </section>
+<div>
+    <a href="https://onino.sex1" class="button-link">onino.sex1</a>
+    <a href="https://oninodevie.github.io/quotes/" class="button-link">Quotes MD</a>
+  </div>
+
+  <div class="notes-section">
+    <h2>🗒️ Notes</h2>
+    <ul>
+      <li>[*] Bullet point example</li>
+      <li>[] Empty checkbox style</li>
+      <li>* Star bullet style</li>
+      <li>→ Arrow example</li>
+      <li>Imagine that you have 1 hundred to train LLMs</li>
+    </ul>
+  </div>
+  <header class="app-header"><h1 class="app-title">Supplizios enumerados</h1><span class="counter" id="headerCounter">1 / 6</span><div style="display:flex;gap:.5rem"><button id="langToggle" class="btn"><span>EN</span> 🌍</button><button id="themeToggle" class="btn">🌙</button></div></header>
+
+  <section class="as-section"><h2>Useful Links</h2><ul><li><a href="https://oninodevie.github.io/quotes/" target="_blank">Quotes</a></li><li><a href="https://platform.openai.com/" target="_blank">OpenAI</a></li><li><a href="https://elevenlabs.io/" target="_blank">ElevenLabs</a></li><li><a href="https://anthropic.com/claude" target="_blank">Claude</a></li><li><a href="https://deepmind.google/technologies/gemini/" target="_blank">Gemini</a></li><li><a href="https://mistral.ai/news/mistral-large/" target="_blank">Mistral</a></li></ul></section>
+
+  <section class="card image-manager"><h2 style="font-size:1.6rem;font-weight:600;margin-bottom:1rem;color:var(--c-text)">Gestión de Imágenes</h2><div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:220px;position:relative;background:#e2e8f0;border-radius:12px;overflow:hidden"><div class="spinner"></div><span style="position:absolute;bottom:1rem;right:1rem;font-size:.95rem;color:#1e3a8a">Cargando...</span></div></section>
+
+  <section class="data-viz"><div class="viz-wrap"><div class="viz-left"><h2>Data<br>Visualizations</h2><div class="viz-icons"><i data-feather="bar-chart-2"></i><i data-feather="pie-chart"></i><i data-feather="trending-up"></i><i data-feather="activity"></i></div></div><div class="viz-right"><img src="https://via.placeholder.com/600x400?text=Dashboard" alt="Dashboard preview"></div></div></section>
+
+  <section class="card" id="playerCard"><header style="display:flex;justify-content:space-between;align-items:center"><span class="player-title">Quote <span id="quoteIdx">1</span> of 6</span><span id="quoteLang" style="font-size:.9rem;color:var(--c-muted)">EN</span></header><blockquote id="quoteDisplay" class="player-display">Loading...</blockquote><div class="controls"><button id="prevBtn" title="Previous"><i data-feather="skip-back"></i></button><button id="playPauseBtn" title="Play/Pause"><i data-feather="play"></i></button><button id="stopBtn" title="Stop"><i data-feather="square"></i></button><button id="nextBtn" title="Next"><i data-feather="skip-forward"></i></button></div><div style="margin-top:1rem;display:flex;align-items:center;gap:.6rem"><label style="font-size:.9rem">Speed <input type="range" id="speedRange" min="0.5" max="1.5" step="0.05" value="1" style="vertical-align:middle"></label><span id="speedLabel" style="font-size:.9rem">1.0x</span></div></section>
+
+  <!-- QUIZ EL QUIJOTE -->
+  <section class="card blog-post"><h2 style="color:var(--c-accent);font-size:1.4rem">📚 El Quijote — Mini Quiz</h2><ol style="margin-left:1rem"><li><p><strong>¿Cómo se llamaba el caballo de Don Quijote?</strong></p><ul><li>a) Babieca</li><li>b) Rocinante ✅</li><li>c) Platero</li></ul></li><li><p><strong>¿Cuál es el nombre real de Don Quijote?</strong></p><ul><li>a) Alonso Quijano ✅</li><li>b) Diego de Miranda</li><li>c) Sancho Panza</li></ul></li><li><p><strong>¿A quién confunde Don Quijote con gigantes y ataca?</strong></p><ul><li>a) A los cabreros</li><li>b) A unos molinos de viento ✅</li><li>c) A los galeotes</li></ul></li></ol><p style="font-size:.9rem;color:var(--c-muted)"><em>Respuestas correctas marcadas con ✅</em></p></section>
+
+  <!-- ===== PRODUCTIVITY TOOLS ===== -->
+  <section class="card">
+    <h2 style="font-size:1.5rem;font-weight:600">🛠️ Productivity Tools</h2>
+    <div class="tools-board">
+      <!-- Sticky Notes -->
+      <div class="sticky-area">
+        <h3>🗒️ Sticky Notes</h3>
+        <button id="newNoteBtn">+ Nueva Nota</button>
+        <div class="notes-wrap" id="notesContainer"></div>
+      </div>
+      <!-- Pencil Tool -->
+      <div class="pencil-area">
+        <h3>✏️ Pencil Tool</h3>
+        <button id="clearCanvasBtn">🧽 Borrar</button><br>
+        <canvas id="drawCanvas" width="720" height="180"></canvas>
+      </div>
+      <!-- Pomodoro -->
+      <div class="pomodoro-area">
+        <h3>⏳ Pomodoro</h3>
+        <div class="pomodoro-box"><span id="pomoTime">25:00</span><div><button id="pomoPlay">▶️</button><button id="pomoReset">🔄</button></div></div>
+      </div>
+      <!-- Blogs -->
+      <div class="blogs-area">
+        <h3>📰 Blogs</h3>
+        <div class="blogs-wrap">
+          <div class="blog-card"><strong>El Futuro de la Ciencia</strong><span>Ciencia</span></div>
+          <div class="blog-card"><strong>Humanidades en la Era Digital</strong><span>Humanidades</span></div>
+          <div class="blog-card"><strong>Arte Minimalista Contemporáneo</strong><span>Arte</span></div>
+          <div class="blog-card"><strong>Explorando Nuevos Sonidos</strong><span>Música</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="extra-section">
+    <h2>➕ Additional Section</h2>
+    <p>Add your new content here as needed for extensions, experiments, or quick notes.</p>
+  </div>
+
+  <div class="file-transfer-section">
+    <h2>📁 File Transfer</h2>
+    <p>Upload a file to transfer or process it in your app:</p>
+    <input type="file" class="file-input" />
+  </div>
+  <footer>
+    <div>🏆 <strong>CH Tennis Academy</strong></div>
+    <p>Formando campeones dentro y fuera de la cancha.</p>
+    <p>Gracias por ser parte de nuestra familia deportiva.</p>
+    <div>✉️ info@chtennisacademy.com | 📞 +1 (555) 123-4567</div>
+    <div>📍 Hunter's Creek, FL | ⏰ Lun-Dom: 6:00 AM - 10:00 PM</div>
+    <div>📘 📸 🐦</div>
+    <div style="font-size:0.8rem;">© 2025 CH Tennis Academy. Todos los derechos reservados.</div>
+  </footer>
+
+  <script>
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      const list = document.getElementById('todoList');
+      if (input.value.trim()) {
+        const li = document.createElement('li');
+        li.textContent = '📌 ' + input.value;
+        list.appendChild(li);
+        input.value = '';
+      }
+    }
+    const backgrounds = [
+      'var(--color-bg)',
+      'var(--color-card)',
+      'var(--color-primary)',
+      'var(--color-secondary)',
+      'var(--color-accent)'
+    ];
+    let bgIndex = 0;
+    function cycleBackground() {
+      bgIndex = (bgIndex + 1) % backgrounds.length;
+      document.body.style.background = backgrounds[bgIndex];
+    }
+    let time = 25 * 60;
+    let cproduxityTimer;
+    function updateTimer() {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      document.getElementById('timer').innerText = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+    }
+    function startCproduxity() {
+      const custom = parseInt(document.getElementById('customTime').value);
+      if (isNaN(custom) || custom < 1) return;
+      if (!cproduxityTimer) time = custom * 60;
+      document.getElementById('startBtn').innerText = '⏳';
+      cproduxityTimer = setInterval(() => {
+        if (time > 0) {
+          time--;
+          updateTimer();
+        } else {
+          clearInterval(cproduxityTimer);
+          logHistory(custom);
+          alert('⏰');
+          document.getElementById('startBtn').innerText = '▶️';
+        }
+      }, 1000);
+    }
+    function stopCproduxity() {
+      clearInterval(cproduxityTimer);
+      cproduxityTimer = null;
+      document.getElementById('startBtn').innerText = '▶️';
+    }
+    function resetCproduxity() {
+      stopCproduxity();
+      const custom = parseInt(document.getElementById('customTime').value);
+      time = custom * 60;
+      updateTimer();
+    }
+    function logHistory(duration) {
+      const history = document.getElementById('history');
+      const li = document.createElement('li');
+      li.textContent = `✅ ${duration}m`;
+      history.appendChild(li);
+    }
+    updateTimer();
+  </script>
+</body>
+</html>

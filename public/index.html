@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supplizios enumerados</title>
+
+  <style>
+    /* ----------  CORE LAYOUT + THEMES  ---------- */
+    :root{
+      /* LIGHT */
+      --brand:#4f46e5;
+      --bg:#f9fafb;
+      --text:#111827;
+      --card:#ffffff;
+      --muted:#dddddd;
+    }
+    body.dark{
+      /* DARK */
+      --bg:#111827;
+      --text:#f9fafb;
+      --card:#1f2937;
+      --muted:#374151;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      transition:background .3s,color .3s;
+    }
+
+    /* ----------  HEADER  ---------- */
+    .app-header{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:1rem;flex-wrap:wrap;
+      padding:1rem 2rem;background:var(--brand);color:#fff
+    }
+    .toggle-btn{background:#fff;color:var(--brand);border:none;padding:.5rem 1rem;border-radius:5px;cursor:pointer;font-weight:bold}
+
+    .main-content{padding:2rem;display:flex;flex-direction:column;gap:3rem}
+
+    /* ----------  REUSABLE CARD  ---------- */
+    .card{
+      max-width:800px;margin:auto;background:var(--card);
+      padding:2rem;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1);
+      display:flex;flex-direction:column;gap:2rem
+    }
+
+    /* ----------  QUOTE READER  ---------- */
+    .quote-container .word{cursor:pointer;padding:.1em .2em;border-radius:3px}
+    .reading-progress{height:4px;background:var(--muted);margin:1rem 0;position:relative}
+    .progress-bar{height:100%;width:0;background:var(--brand);transition:width .3s}
+    .audio-controls button{background:var(--brand);color:#fff;border:none;border-radius:50%;width:50px;height:50px;margin:0 .5rem;cursor:pointer;font-size:1.2rem}
+    .setting-group{display:flex;flex-direction:column;align-items:center}
+    .color-picker{width:40px;height:40px;border:none;cursor:pointer}
+
+    /* ----------  CALCULATORS / NOTES / MUSIC  ---------- */
+    .calc-card,.pomodoro-card,.music-card{border:1px solid var(--muted);border-radius:8px;padding:1.5rem;display:flex;flex-direction:column;gap:1rem}
+    .calc-card h3,.pomodoro-card h3,.music-card h3{margin-bottom:.5rem}
+    .calc-card input,#notesInput{padding:.5rem;border:1px solid var(--muted);border-radius:5px;width:100%;background:var(--bg);color:var(--text)}
+    .calc-card button,.pomodoro-btn,.music-btn{background:var(--brand);color:#fff;border:none;border-radius:5px;padding:.7rem 1rem;cursor:pointer;font-weight:bold}
+    .calc-result{font-weight:bold;text-align:center}
+    .pomodoro-time{font-size:2.5rem;font-weight:bold;text-align:center}
+    .playlist{list-style:none;padding:0;display:flex;flex-direction:column;gap:.5rem}
+    .playlist li{cursor:pointer;padding:.5rem 1rem;border-radius:5px;background:var(--muted);color:var(--text)}
+    .playlist li:hover{background:var(--brand);color:#fff}
+
+    @media(max-width:600px){.audio-controls button{width:40px;height:40px}}
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1 class="app-title">Supplizios enumerados</h1>
+      <div class="quote-counter"><span id="currentQuote">1</span> / <span id="totalQuotes">1</span></div>
+      <div style="display:flex;gap:.5rem"><button id="languageToggle" class="toggle-btn"><span class="language-text">EN</span> 🌍</button><button id="themeToggle" class="toggle-btn">🌙</button></div>
+    </header>
+
+    <!-- ...existing code... -->
+
+<div>
+  <h2>🔗 As Section</h2>
+  <ul>
+    <li><a href="https://oninodevie.github.io/quotes/">As Quotes</a></li>
+    <li><a href="https://platform.openai.com/">As OpenAI</a></li>
+    <li><a href="https://elevenlabs.io/">As ElevenLabs</a></li>
+    <li><a href="https://anthropic.com/claude">As Claude</a></li>
+    <li><a href="https://deepmind.google/technologies/gemini/">As Gemini</a></li>
+    <li><a href="https://mistral.ai/news/mistral-large/">As Mistral</a></li>
+  </ul>
+</div>
+
+<div id="modalOverlay" class="modal-overlay">
+  <button class="back-btn" onclick="window.close()">
+    <span class="arrow-icon">&#8592;</span> Volver a la pestaña
+  </button>
+  <div class="canvas-area">
+    <div class="canvas-content"></div>
+    <div class="canvas-cursor">&#128072;</div>
+  </div>
+  <div class="progress-indicator">71&nbsp;%</div>
+</div>
+<!-- ...existing code... -->
+    <main class="main-content">
+      <!-- QUOTE READER -->
+      <section class="card quote-container">
+        <h2 id="quoteTitle" class="quote-title">Loading...</h2>
+        <div class="reading-progress"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="quoteDisplay"><div class="loading-state"><p>Loading quotes...</p></div></div>
+        <div class="controls-panel">
+          <div class="audio-controls"><button id="prevBtn">⏮️</button><button id="playPauseBtn">▶️</button><button id="stopBtn">⏹️</button><button id="nextBtn">⏭️</button></div>
+          <div class="settings-panel"><div class="setting-group"><label for="audioFile">Audio File</label><input type="file" id="audioFile" accept="audio/*"></div><div class="setting-group"><label for="highlightColor">Highlight</label><input type="color" id="highlightColor" value="#4f46e5" class="color-picker"></div></div>
+        </div>
+      </section>
+
+      <!-- CALCULATORS -->
+      <section class="card calculator-container">
+        <div class="calc-card"><h3>Body Mass Index (BMI)</h3><label>Weight (kg)</label><input type="number" id="weightInput" min="1" step="0.1"><label>Height (m)</label><input type="number" id="heightInput" min="0.5" step="0.01"><button id="bmiBtn">Calculate BMI</button><div id="bmiResult" class="calc-result"></div></div>
+        <div class="calc-card"><h3>University Admission Score</h3><label>Correct answers (✔)</label><input type="number" id="goodInput" min="0"><label>Wrong answers (✘)</label><input type="number" id="badInput" min="0"><button id="scoreBtn">Calculate Score</button><div id="scoreResult" class="calc-result"></div></div>
+      </section>
+
+      <!-- NOTES & POMODORO -->
+      <section class="card notes-container">
+        <h2>Notes</h2><textarea id="notesInput" placeholder="Write your notes here..."></textarea><div class="notes-actions"><button id="saveNotesBtn" class="pomodoro-btn">Save Notes</button></div>
+        <div class="pomodoro-card"><h3>Sex123conc3hatumare Pomodoro</h3><div id="pomodoroTimer" class="pomodoro-time">25:00</div><div style="display:flex;gap:1rem;justify-content:center"><button id="pomodoroStartBtn" class="pomodoro-btn">Start</button><button id="pomodoroResetBtn" class="pomodoro-btn">Reset</button></div></div>
+      </section>
+
+      <!-- MUSIC PLAYER -->
+      <section class="card music-container">
+        <h2>🎧 Lofi Library / Upload</h2>
+        <div class="music-card">
+          <h3>Catalog</h3>
+          <ul id="playlist" class="playlist"></ul>
+          <h3>Upload your Track</h3>
+          <input type="file" id="userTrack" accept="audio/*" class="music-btn">
+          <audio id="musicPlayer" controls style="width:100%;margin-top:1rem"></audio>
+        </div>
+      </section>
+    </main>
+<section class="card notes-container">
+  <h2>Notes</h2>
+  <textarea id="notesInput" placeholder="Write your notes here..." style="width:100%;height:60px;border-radius:8px;padding:.7rem;background:var(--muted);color:var(--text);border:none;font-size:1rem;"></textarea>
+  <div class="notes-actions" style="margin:1rem 0;">
+    <button id="saveNotesBtn" class="pomodoro-btn" style="background:#8b5cf6;color:#fff;padding:.7rem 1.4rem;border-radius:7px;font-weight:bold;border:none;cursor:pointer;">Save Notes</button>
+  </div>
+  <div class="pomodoro-card" style="border:1px solid var(--muted);border-radius:12px;padding:1.5rem;margin-top:1rem;">
+    <h3 style="font-size:1.3rem;font-weight:bold;text-align:center;margin-bottom:.5rem;">Sex123conc3hatumare Pomodoro</h3>
+    <div id="pomodoroTimer" class="pomodoro-time" style="font-size:2.5rem;font-weight:bold;text-align:center;">25:00</div>
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:1rem;">
+      <button id="pomodoroStartBtn" class="pomodoro-btn" style="background:#8b5cf6;color:#fff;padding:.7rem 1.4rem;border-radius:7px;font-weight:bold;border:none;cursor:pointer;">Start</button>
+      <button id="pomodoroResetBtn" class="pomodoro-btn" style="background:#8b5cf6;color:#fff;padding:.7rem 1.4rem;border-radius:7px;font-weight:bold;border:none;cursor:pointer;">Reset</button>
+    </div>
+  </div>
+</section>
+    <audio id="audioPlayer" style="display:none;"></audio>
+    <div id="errorMessage" class="error-message" aria-live="polite"></div>
+  </div>
+
+  <script>
+    /* ----------  THEME ---------- */
+    const themeToggle=document.getElementById('themeToggle');
+    if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark');
+    themeToggle.addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light')});
+
+    /* ----------  QUOTE READER ---------- */
+    class QuotesAudioApp{constructor(){this.quotes={en:[{id:'I',text:`Yes, Gregory ... square`,audio:''}],es:[{id:'I',text:`Sí, Gregory ... cuadrado`,audio:''}]};this.lang='en';this.idx=0;this.color='#4f46e5';this.e={d:document.getElementById('quoteDisplay'),t:document.getElementById('quoteTitle'),c:document.getElementById('currentQuote'),tot:document.getElementById('totalQuotes'),langBtn:document.getElementById('languageToggle'),picker:document.getElementById('highlightColor')};this.init()}init(){this.e.tot.textContent=this.quotes[this.lang].length;this.load();this.e.picker.addEventListener('input',e=>this.color=e.target.value);this.e.langBtn.addEventListener('click',()=>{this.lang=this.lang==='en'?'es':'en';this.e.langBtn.querySelector('.language-text').textContent=this.lang.toUpperCase();this.idx=0;this.load()})}load(){const q=this.quotes[this.lang][this.idx];this.e.t.textContent=`Quote ${q.id}`;this.e.c.textContent=this.idx+1;this.e.d.innerHTML=q.text.split(' ').map(w=>`<span class="word">${w}</span>`).join(' ');document.querySelectorAll('.word').forEach(s=>s.addEventListener('click',()=>{s.style.background=this.color;s.style.color='#fff'}))}};new QuotesAudioApp();
+
+    /* ----------  CALCULATORS ---------- */
+    document.getElementById('bmiBtn').addEventListener('click',()=>{const w=parseFloat(weightInput.value),h=parseFloat(heightInput.value);bmiResult.textContent=!w||!h?'Enter valid data':`BMI: ${(w/(h*h)).toFixed(2)}`});
+    document.getElementById('scoreBtn').addEventListener('click',()=>{const s=Math.max(0,Math.min(400,(+goodInput.value||0)*4-(+badInput.value||0)));scoreResult.textContent=`Score: ${s} / 400`});
+
+    /* ----------  NOTES ---------- */
+    const notesKey='supplizios_notes';notesInput.value=localStorage.getItem(notesKey)||'';saveNotesBtn.onclick=()=>{localStorage.setItem(notesKey,notesInput.value);alert('Notes saved ✅')};
+
+    /* ----------  POMODORO ---------- */
+    let t=1500,int=null;const upd=()=>{pomodoroTimer.textContent=`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`};upd();pomodoroStartBtn.onclick=()=>{if(int)return;int=setInterval(()=>{if(--t<0){clearInterval(int);int=null;alert('Pomodoro done!');t=0}upd()},1000)};pomodoroResetBtn.onclick=()=>{clearInterval(int);int=null;t=1500;upd()};
+
+    /* ----------  MUSIC PLAYER ---------- */
+    const catalog=[{title:'Dreaming lofi',url:'https://cdn.pixabay.com/download/audio/2022/03/10/audio_6d438e120c.mp3?filename=lovely-piano-lofi-112191.mp3'},{title:'Night Walk',url:'https://cdn.pixabay.com/download/audio/2021/11/30/audio_d763b69870.mp3?filename=lofi-study-112191.mp3'},{title:'Calm Vibes',url:'https://cdn.pixabay.com/download/audio/2022/02/23/audio_6546f49370.mp3?filename=calm-lofi-ambient-112191.mp3'}];
+    const playlist=document.getElementById('playlist');const player=document.getElementById('musicPlayer');catalog.forEach((t,i)=>{const li=document.createElement('li');li.textContent=t.title;li.onclick=()=>{player.src=t.url;player.play()};playlist.appendChild(li)});
+    document.getElementById('userTrack').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;player.src=URL.createObjectURL(f);player.play()});
+  </script>
+</body>
+</html>

@@ -1,0 +1,624 @@
+<!--
+  ╭──────────────────────────────────────────────────────────────────────────────╮
+  │ Documento HTML completamente comentado. Cada bloque de comentarios describe │
+  │         el propósito de **cada** palabra clave, atributo, selector,         │
+  │         propiedad, método y convención de nomenclatura utilizada.           │
+  │                                                                              │
+  │  Notas sobre estilo de los comentarios:                                      │
+  │  ─ "•" Encabezado de la explicación.                                         │
+  │  ─ "→" Detalle o aclaración puntual.                                         │
+  ╰──────────────────────────────────────────────────────────────────────────────╯
+-->
+
+<!DOCTYPE html><!-- • Declaración de tipo de documento: le indica al navegador que este archivo sigue la especificación HTML5. -->
+<html lang="es"><!-- • Elemento raíz del documento. Atributo lang="es" especifica que el contenido principal está en español. -->
+<head>
+  <!-- • <meta charset="UTF-8"> declara que el documento está codificado en Unicode UTF-8 para soportar caracteres acentuados, ñ, emojis, etc. -->
+  <meta charset="UTF-8">
+  <!-- • <meta name="viewport"> permite un diseño responsive. 
+       → width=device-width: ajusta el ancho lógico al del dispositivo.
+       → initial-scale=1.0: zoom inicial al 100 %. -->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <!-- • <title> se muestra en la pestaña del navegador y en marcadores. -->
+  <title>Demo Completa — Educación &amp; UX</title>
+
+  <!--
+    ╭───────────────────────────
+    │  BLOQUE DE ESTILOS (CSS)
+    ╰───────────────────────────
+    • Se usa un único <style> embebido para mantener la demo autocontenida.
+    • Se declaran variables CSS (custom properties) bajo :root para temas.
+  -->
+  <style>
+    :root{/* • Sección raíz para variables globales de color. */
+      /* → --bg, --surface... nombres semánticos facilitan el theming oscuro/claro. */
+      --bg:#0f172a;        /* Color de fondo general (gris azulado muy oscuro).   */
+      --surface:#1e293b;   /* Paneles principales (tarjetas).                     */
+      --surface2:#334155;  /* Paneles secundarios (sub-tarjetas / tablas).        */
+      --txt:#e2e8f0;       /* Color de texto predominante.                        */
+      --accent:#38bdf8;    /* Color de realce (azul-cian).                       */
+      --teal:#4ca6af;      /* Fondo de tarjetas de temporizador.                 */
+      --teal-dk:#244045;   /* Variante más oscura para botones dentro del timer. */
+    }
+
+    /* • Selector `body` aplica reglas base de tipografía y layout. */
+    body{
+      margin:0;                              /* Elimina el margen por defecto.  */
+      font-family:system-ui,sans-serif;       /* Fuente nativa del SO.           */
+      background:var(--bg);                  /* Uso de variable — fondo oscuro. */
+      color:var(--txt);                      /* Texto claro para contraste.     */
+      line-height:1.55;                      /* Espaciado vertical legible.     */
+    }
+
+    /* • section.card: clase utilitaria para “tarjetas”. */
+    section.card{
+      background:var(--surface);
+      padding:1.6rem;                        /* 1 rem ≈ tamaño de letra raíz.   */
+      border-radius:18px;                    /* Esquinas redondeadas suaves.    */
+      margin:1.5rem auto;                    /* Centra y separa verticalmente.  */
+      max-width:860px;                       /* Ancho máx. para lecturas largas.*/
+      /* Sombra sutil → x=0, y=2px, blur=8px, color negro translúcido.          */
+      box-shadow:0 2px 8px rgba(0,0,0,.25);
+    }
+
+    /* Encabezados tipográficos */
+    h1,h2,h3{
+      margin:0 0 .6rem; /* Reinicia margen sup. a 0 y deja .6 rem debajo. */
+    }
+
+    /* ────────── Formulario ────────── */
+    .form-wrap{
+      display:flex;           /* Flexbox columna para alinear verticalmente. */
+      flex-direction:column;
+      gap:1rem;               /* Espacio entre inputs. */
+    }
+    .form-wrap input{
+      padding:.75rem 1rem;    /* Área táctil cómoda.    */
+      border-radius:12px;
+      border:none;
+      width:100%;             /* Se expanden al ancho padre. */
+      font-size:1rem;         /* 16 px aprox. */
+    }
+    .btn-primary{
+      background:var(--accent);
+      border:none;
+      color:#022c3f;          /* Texto oscuro sobre botón claro (inverso). */
+      padding:.75rem 1.5rem;
+      border-radius:10px;
+      font-weight:600;        /* Semibold para énfasis. */
+      cursor:pointer;         /* Puntero de mano. */
+    }
+
+    /* ────────── Panel de temporizadores ────────── */
+    #timersGrid{
+      display:flex;
+      flex-direction:column;
+      gap:1rem;               /* Espacio vertical entre tarjetas. */
+    }
+    .timer-card{
+      background:var(--teal);
+      padding:1rem;
+      border-radius:16px;
+      color:#021f1e;          /* Texto oscuro sobre verde-azul claro. */
+      display:flex;
+      flex-direction:column;
+      gap:.8rem;
+    }
+    .timer-card header{
+      display:flex;
+      justify-content:space-between; /* Título a la izq. y botón cerrar a la der. */
+      font-weight:600;
+    }
+    .dial{                    /* Pantalla grande del cronómetro. */
+      font-size:2.4rem;
+      text-align:center;
+    }
+    .timer-ctrls{
+      display:flex;
+      gap:.5rem;              /* Espacio entre botones de control. */
+    }
+    .timer-ctrls button{
+      flex:1;                 /* Cada botón ocupa la misma anchura. */
+      border:none;
+      border-radius:8px;
+      padding:.4rem;
+      background:var(--teal-dk);
+      color:#fff;
+      font-size:1rem;
+      cursor:pointer;
+    }
+    .close{
+      background:none;
+      border:none;
+      font-size:1.1rem;
+      cursor:pointer;
+    }
+    #newTimerBtn{/* Botón flotante para añadir nuevo cronómetro. */
+      position:fixed;
+      bottom:2rem;
+      right:2rem;
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      background:var(--accent);
+      border:none;
+      color:#022c3f;
+      font-size:2rem;
+      cursor:pointer;
+      box-shadow:0 4px 12px rgba(0,0,0,.4);
+    }
+
+    /* ─── Blog / tabla / listas ─── */
+    table{
+      width:100%;
+      border-collapse:collapse; /* Elimina espacios entre celdas. */
+    }
+    th,td{
+      padding:.5rem .6rem;
+      border-bottom:1px solid #475569;
+    }
+    thead{
+      background:var(--surface2);
+    }
+    .tag{
+      background:#2563eb;
+      border-radius:4px;
+      padding:.15rem .45rem;
+      font-size:.75rem;
+    }
+    .blogs-wrap{
+      display:flex;
+      gap:1rem;
+      overflow-x:auto; /* Carrusel horizontal si desborda. */
+    }
+    .blog-card{
+      min-width:160px;
+      background:var(--surface2);
+      padding:.8rem;
+      border-radius:10px;
+      color:#fff;
+    }
+
+    /* ─── Spinner (componente de carga) ─── */
+    .spinner{
+      width:64px;height:64px;
+      border:8px solid var(--accent);      /* Borde coloreado. */
+      border-top-color:transparent;        /* Se crea “efecto hueco” arriba. */
+      border-radius:50%;                   /* Círculo perfecto. */
+      animation:spin 1s linear infinite;   /* Keyframes abajo. */
+    }
+    @keyframes spin{/* Gira de 0° a 360°. */
+      to{transform:rotate(360deg)}
+    }
+  </style>
+</head>
+
+<body><!-- • Inicio de la sección visible del documento. -->
+
+  <!-- ╭──────────────── Header ────────────────╮ -->
+  <section class="card" style="text-align:center;background:linear-gradient(135deg,#023047 0%,#014f86 100%);color:#fff">
+    <h1>Registrar Nuevo Estudiante</h1>
+    <div class="form-wrap" style="max-width:420px;margin:auto">
+      <!-- • <input> sin atributo name → es una demo (no se envía a servidor). -->
+      <input placeholder="Nombre">
+      <input placeholder="Edad" type="number"><!-- type="number" muestra teclado numérico en móvil. -->
+      <input placeholder="Nivel">
+      <input placeholder="Horario">
+      <!-- .btn-primary definido arriba. -->
+      <button class="btn-primary">Guardar</button>
+    </div>
+  </section>
+
+  <!-- ╭──────────────── Timers ────────────────╮ -->
+  <section class="card">
+    <h2 style="color:var(--accent)">⏱️ Temporizadores</h2>
+    <div id="timersGrid"></div><!-- Contenedor dinámico donde JS insertará .timer-card. -->
+  </section>
+  <!-- Botón flotante para crear un nuevo timer. -->
+  <button id="newTimerBtn">+</button>
+
+  <!-- ╭──────────────── Blogs & Educación ─────╮ -->
+  <section class="card">
+    <h2 style="color:var(--accent)">📚 Blog – IA &amp; Nutrición</h2>
+    <p class="snippet">Smart meal planning is going along</p>
+    <!-- Tabla nutricional de ejemplo -->
+    <table>
+      <thead><tr><th>Nutriente</th><th>Porción</th><th>% VD</th></tr></thead>
+      <tbody>
+        <tr><td>Calorías</td><td>250 kcal</td><td>12&nbsp;%</td></tr>
+        <tr><td>Proteína</td><td>20 g</td><td>40&nbsp;%</td></tr>
+        <tr><td>Carbs</td><td>30 g</td><td>10&nbsp;%</td></tr>
+        <tr><td>Grasas</td><td>10 g</td><td>15&nbsp;%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2 style="color:var(--accent)">🤖 Blog – AI Injury Prevention</h2>
+    <div style="margin-bottom:.5rem">
+      <span class="tag">health</span> <span class="tag">injury</span> <span class="tag">AI</span>
+    </div>
+    <p class="snippet">What if your AI coach could warn</p>
+  </section>
+
+  <section class="card">
+    <h2 style="color:var(--accent)">📊 Visual Keys – Finance &amp; UX</h2>
+    <h3>Checklist UI</h3>
+    <ul>
+      <li>🟦 Ítems pendientes (casilla vacía).</li>
+      <li>☰ Arrastre para ordenar.</li>
+      <li>📄 Texto libre o numérico.</li>
+      <li>🟥 Tema oscuro burdeos.</li>
+    </ul>
+    <h3 style="margin-top:1rem">Tabla comparativa de navegación</h3>
+    <table>
+      <thead><tr><th>Entorno</th><th>Sintaxis</th><th>Comentario</th></tr></thead>
+      <tbody>
+        <tr><td>HTML</td><td>&lt;a&gt;</td><td>Link nativo</td></tr>
+        <tr><td>React Web</td><td>&lt;Link&gt;</td><td>react-router</td></tr>
+        <tr><td>React Native</td><td>Linking.openURL()</td><td>API nativa</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2 style="color:var(--accent)">💰 Educación Financiera – Tech &amp; Trading Quiz</h2>
+    <table>
+      <thead><tr><th>#</th><th>Afirmación</th><th>4</th><th>5</th><th>🔄</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Base MetaTrader 4</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>2</td><td>Hedging + Netting</td><td>☐</td><td>☐</td><td>☐</td></tr>
+        <tr><td>3</td><td><code>OnTick()</code> principal</td><td>☐</td><td>☐</td><td>☐</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2 style="color:var(--accent)">🎒 Educación para el Trabajo</h2>
+    <p>Presenta checklists con drag-handles, tablas comparativas (HTML vs React) y buenas prácticas de contraste, priorización y personalización de temas.</p>
+  </section>
+
+  <!-- ╭────────────── Loading Component demo ─────────────╮ -->
+  <section class="card" style="text-align:center">
+    <div class="spinner" aria-label="Cargando"></div>
+    <p class="text-lg" style="margin:.8rem 0 .2rem">Extendiendo y personalizando sus fechas objetivo...</p>
+    <p style="font-size:.9rem;color:#94a3b8">Espere un momento, por favor.</p>
+  </section>
+
+  <!--
+  ╭──────────────────────────────────────────────────────────────────────────────╮
+  │  Bloque adicional basado en la captura de pantalla proporcionada:            │
+  │    • Pantalla de autenticación con botones “Continuar con Google / Apple”   │
+  │      y flujo alternativo por correo electrónico (botón inicialmente des-     │
+  │      habilitado).                                                            │
+  │                                                                              │
+  │  Importante: mantengo la misma convención de comentarios exhaustivos         │
+  │  utilizada en la respuesta anterior.                                         │
+  ╰──────────────────────────────────────────────────────────────────────────────╯
+-->
+
+
+<section class="pomodoro-section" id="pomodoro">
+  <h2>🍅 Pomodoro Timers</h2>
+
+  <!-- Contenedor donde se inyectan los timers -->
+  <div class="timer-grid" id="timerGrid"></div>
+
+  <!-- Botón para crear nuevos timers (25 min por defecto) -->
+  <button class="button-link" id="addTimerBtn">➕ New Timer</button>
+</section>
+
+<!-- 📝 Quick Notes -->
+<section class="notes-section" id="quickNotes" style="margin-top:2rem">
+  <h2>📝 Quick Notes</h2>
+  <!-- Toolbar -->
+  <div class="toolbar" style="border:1px solid #cbd5e0;border-bottom:none;background:#edf2f7;display:flex;gap:.5rem;padding:.4rem">
+    <button data-cmd="bold"><strong>B</strong></button>
+    <button data-cmd="italic"><em>I</em></button>
+    <button data-cmd="underline"><u>U</u></button>
+    <button data-cmd="insertUnorderedList">• List</button>
+    <button data-cmd="insertOrderedList">1. List</button>
+    <button data-cmd="removeFormat">Tx</button>
+  </div>
+  <!-- Editable area -->
+  <div id="noteEditor" contenteditable="true" style="min-height:160px;border:1px solid #cbd5e0;padding:.6rem;font-family:inherit"></div>
+  <button id="saveNote" class="button-link" style="margin-top:.8rem">💾 Save Note</button>
+</section>
+
+<script>
+  // simple execCommand toolbar
+  document.querySelectorAll('.toolbar button').forEach(btn=>{
+    btn.onclick = () => document.execCommand(btn.dataset.cmd,false,null);
+  });
+  // persist note to localStorage
+  const editor = document.getElementById('noteEditor');
+  const LS_KEY = 'quickNote';
+  editor.innerHTML = localStorage.getItem(LS_KEY) || '';
+  document.getElementById('saveNote').onclick = ()=>{
+    localStorage.setItem(LS_KEY, editor.innerHTML);
+    alert('Nota guardada ✔️');
+  };
+</script>
+
+<section class="pomodoro-section" id="pomodoro">
+  <h2>🍅 Pomodoro Timers</h2>
+
+  <!-- Contenedor donde se inyectan los timers -->
+  <div class="timer-grid" id="timerGrid"></div>
+
+  <!-- Botón para crear nuevos timers (25 min por defecto) -->
+  <button class="button-link" id="addTimerBtn">➕ New Timer</button>
+</section>
+
+
+<h1>🧠 AI, Sports & Health Blogs</h1>
+
+  <div class="blog-card">
+    <h2>Blog 1: Nutrition Meets Tech — Building Smarter Diets</h2>
+    <div class="tags">
+      <span class="tag">nutrition</span>
+      <span class="tag">AI</span>
+      <span class="tag">fitness</span>
+    </div>
+    <p class="snippet">Smart meal planning is going algorithmic. Let’s explore how...</p>
+    <p>AI models are being trained on millions of nutritional profiles, allergies, and training goals. Apps like MyFitnessPal now personalize diets based on exercise routines and biometric feedback. Integration with wearables enables real-time calorie tracking and macro-adjustment.</p>
+    <table>
+      <thead>
+        <tr><th>Nutrient</th><th>Value per Serving</th><th>Recommended Daily %</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Calories</td><td>250 kcal</td><td>12%</td></tr>
+        <tr><td>Protein</td><td>20 g</td><td>40%</td></tr>
+        <tr><td>Carbs</td><td>30 g</td><td>10%</td></tr>
+        <tr><td>Fats</td><td>10 g</td><td>15%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="blog-card">
+    <h2>Blog 2: AI for Injury Prevention</h2>
+    <div class="tags">
+      <span class="tag">health</span>
+      <span class="tag">injury</span>
+      <span class="tag">AI</span>
+    </div>
+    <p class="snippet">What if your AI coach could warn you before an injury strikes?</p>
+    <p>With sensors and AI pattern analysis, systems detect risky movements or overloads. Platforms like Sparta Science and Whoop track biomechanics and flag anomalies before injuries occur. This shift from reactive to preventive care marks a game-changer in athletic longevity.</p>
+  </div>
+
+  <div class="blog-card">
+    <h2>Blog 3: Sleep, Stress, and Sports — AI’s Role in Recovery</h2>
+    <div class="tags">
+      <span class="tag">recovery</span>
+      <span class="tag">sleep</span>
+      <span class="tag">stress</span>
+    </div>
+    <p class="snippet">Recovery is the other half of performance. Let’s optimize it.</p>
+    <p>Wearables monitor sleep cycles, HRV (Heart Rate Variability), and stress levels. AI interprets these signals and adjusts training recommendations. Apps like Rise or Whoop coach users into better recovery habits. Sleep tracking is no longer passive — it’s proactive.</p>
+  </div>
+
+  <div class="blog-card">
+    <h2>💼 Automating for Efficiency — Applied Case: Carla's Sales Team</h2>
+    <div class="tags">
+      <span class="tag">process automation</span>
+      <span class="tag">business</span>
+      <span class="tag">efficiency</span>
+    </div>
+    <p class="snippet">What should Carla do to start automation in her sales team?</p>
+    <ol>
+      <li>Carla leads a sales team and notices inefficiencies from repeated tasks. She's unsure how to begin automating. What do you recommend?
+        <ul>
+          <li>A. Train her team on optimizing time per activity.</li>
+          <li>B. Integrate automated systems identifying high-impact repetitive tasks.</li>
+          <li>C. Assign a team and schedule to minimize workload.</li>
+          <li>D. Map current processes to identify repetitive actions. ✅</li>
+        </ul>
+      </li>
+      <li><strong>Select all correct options regarding benefits of automation:</strong>
+        <ul>
+          <li>☑ Work from anywhere, tailored schedules.</li>
+          <li>☑ Performance control and agility.</li>
+          <li>☑ Cost reduction and operational standardization.</li>
+          <li>☑ System integration and task accessibility.</li>
+          <li>☑ Multiple interactions and traceability.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  
+<!-- 📝 Quick Notes -->
+<section class="notes-section" id="quickNotes" style="margin-top:2rem">
+  <h2>📝 Quick Notes</h2>
+  <!-- Toolbar -->
+  <div class="toolbar" style="border:1px solid #cbd5e0;border-bottom:none;background:#edf2f7;display:flex;gap:.5rem;padding:.4rem">
+    <button data-cmd="bold"><strong>B</strong></button>
+    <button data-cmd="italic"><em>I</em></button>
+    <button data-cmd="underline"><u>U</u></button>
+    <button data-cmd="insertUnorderedList">• List</button>
+    <button data-cmd="insertOrderedList">1. List</button>
+    <button data-cmd="removeFormat">Tx</button>
+  </div>
+  <!-- Editable area -->
+  <div id="noteEditor" contenteditable="true" style="min-height:160px;border:1px solid #cbd5e0;padding:.6rem;font-family:inherit"></div>
+  <button id="saveNote" class="button-link" style="margin-top:.8rem">💾 Save Note</button>
+</section>
+
+<script>
+  // simple execCommand toolbar
+  document.querySelectorAll('.toolbar button').forEach(btn=>{
+    btn.onclick = () => document.execCommand(btn.dataset.cmd,false,null);
+  });
+  // persist note to localStorage
+  const editor = document.getElementById('noteEditor');
+  const LS_KEY = 'quickNote';
+  editor.innerHTML = localStorage.getItem(LS_KEY) || '';
+  document.getElementById('saveNote').onclick = ()=>{
+    localStorage.setItem(LS_KEY, editor.innerHTML);
+    alert('Nota guardada ✔️');
+  };
+</script>
+
+
+
+<!-- ╭────────────── Autenticación ──────────────╮ -->
+<section class="card auth-card"><!-- • Sección nueva; clase auth-card reutiliza estilos .card. -->
+  <h2 style="text-align:center">Iniciar sesión</h2>
+
+  <!-- Botón Google -->
+  <button class="btn-oauth google">
+    <!-- • <svg> podría contener el logo; aquí usamos el carácter “G” simplificado. -->
+    <span class="icon">G</span>
+    Continuar con Google
+  </button>
+
+  <!-- Botón Apple -->
+  <button class="btn-oauth apple">
+    <span class="icon"><!-- U+F8FF glyph popular para logo Apple --></span>
+    Continuar con Apple
+  </button>
+
+  <!-- Línea divisoria -->
+  <hr><!-- <hr> = horizontal rule: separa alternativas de autenticación. -->
+
+  <!-- Formulario email-only -->
+  <form class="email-flow"><!-- No action: demo local. -->
+    <label class="visually-hidden" for="email">Correo electrónico</label>
+    <input
+      id="email"
+      type="email"                <!-- type=email ≈ validación automática HTML5. -->
+      placeholder="Ingresa tu correo electrónico"
+      autocomplete="email"        <!-- Sugiere email almacenado por el navegador. -->
+      required                    <!-- Campo obligatorio para habilitar el botón. -->
+    >
+
+    <button
+      type="submit"
+      class="btn-primary"
+      disabled                    <!-- El botón inicia deshabilitado hasta ingresar texto. -->
+    >
+      Continuar con el correo electrónico
+    </button>
+  </form>
+</section>
+
+  <!--
+    ╭───────────────────────
+    │  JavaScript — Motor de temporizadores
+    ╰───────────────────────
+    • Se usa ES6+; todas las funciones están en el ámbito global para simplicidad.
+  -->
+  <script>
+    /* ───────────── Variables globales ───────────── */
+
+    let timerSeq = 0; /* • Contador incremental que garantiza IDs únicos: t1, t2… */
+    /* • Map ≈ diccionario clave→valor. Permite CRUD de timers por id. */
+    const timers = new Map();
+
+    /* • fmt(s): formatea segundos en "MM:SS".
+       → Math.floor(): parte entera de minutos.
+       → String.padStart(2,'0'): relleno con cero a la izquierda. */
+    const fmt = s => `${String(Math.floor(Math.abs(s) / 60)).padStart(2,'0')}:${String(Math.abs(s) % 60).padStart(2,'0')}`;
+
+    /* ───────────── createTimer ─────────────
+       • label: texto mostrado en header.        (default '5m Timer')
+       • total: duración total en segundos.      (default 300 = 5 min)
+       • Retorna void; crea DOM e inserta en #timersGrid.
+    */
+    function createTimer(label = '5m Timer', total = 300){
+      /* Clave primaria id (e.g. "t3"). ++timerSeq usa pre-incremento. */
+      const id = `t${++timerSeq}`;
+
+      /* Persistimos un objeto con:
+         – sec: segundos restantes.         – total: valor inicial.
+         – int: manejador setInterval o null si está en pausa. */
+      timers.set(id, {sec: total, total, int: null});
+
+      /* Generación dinámica de markup HTML para la tarjeta. */
+      const c = document.createElement('div');
+      c.className = 'timer-card';
+      /* `` (template literals) interpolan vars ${}. */
+      c.innerHTML = `
+        <header>${label}<button class="close" data-id="${id}">✕</button></header>
+        <div class="dial" id="${id}-time">${fmt(total)}</div>
+        <div class="timer-ctrls">
+          <button class="plus" data-id="${id}">+1:00</button>
+          <button class="play" data-id="${id}">▶️</button>
+          <button class="reset" data-id="${id}">🔄</button>
+        </div>`;
+
+      /* prepend() inserta como primer hijo (el más reciente arriba). */
+      document.getElementById('timersGrid').prepend(c);
+
+      /* Delegación de eventos: un solo handler interno por tarjeta. */
+      c.onclick = e => {
+        const tid = e.target.dataset.id; /* data-* attrs accedidos vía dataset. */
+        if(!tid) return;                 /* Click fuera de botones: salir.     */
+        if(e.target.classList.contains('play'))  toggle(tid, e.target);
+        if(e.target.classList.contains('plus'))  plus(tid);
+        if(e.target.classList.contains('reset')) reset(tid);
+        if(e.target.classList.contains('close')) del(tid, c);
+      };
+    }
+
+    /* tick(id): resta 1 s y actualiza UI. */
+    function tick(id){
+      const t = timers.get(id);
+      if(!t) return;
+      t.sec--;
+      /* Se muestra signo negativo cuando expira. */
+      document.getElementById(id + '-time').textContent = (t.sec < 0 ? '-' : '') + fmt(t.sec);
+    }
+
+    /* toggle(id,btn): alterna play/pausa. */
+    function toggle(id, btn){
+      const t = timers.get(id);
+      if(!t) return;
+      if(t.int){
+        /* Si estaba corriendo → pausa. */
+        clearInterval(t.int);
+        t.int = null;
+        btn.textContent = '▶️';
+      }else{
+        /* Si estaba en pausa → inicia intervalo de 1 s. */
+        t.int = setInterval(() => tick(id), 1000);
+        btn.textContent = '⏸️';
+      }
+    }
+
+    /* plus(id): añade 60 s. */
+    const plus = id => {
+      const t = timers.get(id);
+      t.sec += 60;
+      document.getElementById(id + '-time').textContent = fmt(t.sec);
+    };
+
+    /* reset(id): vuelve a duración inicial. */
+    const reset = id => {
+      const t = timers.get(id);
+      t.sec = t.total;
+      document.getElementById(id + '-time').textContent = fmt(t.sec);
+    };
+
+    /* del(id,card): limpia intervalo, elimina Map y quita nodo DOM. */
+    function del(id, card){
+      const t = timers.get(id);
+      if(t.int) clearInterval(t.int);
+      timers.delete(id);
+      card.remove();
+    }
+
+    /* Event listener del botón flotante: prompt() pide minutos y crea timer. */
+    document.getElementById('newTimerBtn').onclick = () => {
+      /* +prompt castea string→number; + antes convierte a Number. */
+      const m = +prompt('Minutos?', 5);
+      if(m > 0) createTimer(m + 'm Timer', m * 60);
+    };
+
+    /* Seed inicial: tres temporizadores (5, 15 y 30 min). */
+    createTimer('5m Timer', 300);
+    createTimer('15m Timer', 900);
+    createTimer('30m Timer', 1800);
+  </script>
+</body>
+</html>
